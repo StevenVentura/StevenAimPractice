@@ -14,12 +14,17 @@ import javax.swing.JFrame;
 
 public class StevenAim
 {
-	public StevenAim() { }
+	
 	private BufferedImage bi;
 	private Graphics2D g;
 	private Graphics2D g2;
 	private Robot r;
-	private final int width = 800, height = 800;
+	private final int width, height;
+	
+	public StevenAim() {
+		width = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+		height = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+	}
 	
 	class AimClass
 	{
@@ -33,10 +38,25 @@ public class StevenAim
 	{
 		
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		BufferedImage cursorImage = new BufferedImage(15,15,5);
+		BufferedImage cursorImage = new BufferedImage(16,16,2);
 		Graphics2D drawCursor = cursorImage.createGraphics();
 		drawCursor.setPaint(Color.YELLOW);
-		drawCursor.fillRect(0, 0, 15, 15);
+		int yellow = (255 << 24) | (255 << 16) | (255 << 8 ) | (0);
+		int transparentGreen = (0 << 24) | (0 << 16) | (255 << 8) | 0;
+		for (int r = 0; r < 16; r++)
+		{
+			for (int c = 0; c < 16; c++)
+			{
+				if (Math.sqrt(Math.pow(r-7,2) + Math.pow(c-8,2)) <= 5
+						&&
+						Math.sqrt(Math.pow(r-7,2) + Math.pow(c-8,2)) >= 4)
+				{
+					cursorImage.setRGB(c,r,yellow);
+				}
+				else
+					cursorImage.setRGB(c,r,transparentGreen);
+			}
+		}
 		drawCursor.drawImage(cursorImage,null,0,0);
 		Point cursorHotSpot = new Point(7,7);
 		Cursor customCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot, "Cursor");
